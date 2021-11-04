@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TSDuck</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tsduck.css' %}">
+</head>
+<body>
+<div class="header">
+	<a href="#">TSDuck</a>
+	{% if user.is_authenticated %}
+	<div class="ssh-session">
+		<form method="POST" id="ssh_form" class="ssh_form" action="/tsduck/logout">
+			{% csrf_token %}
+			<button type="submit" name="end-session">Logout</button>
+		</form>
+	</div>
+	<p class="user-name">Hello! {{user.username}}</p>
+	{% endif %}
+</div>
+<div class="row main">
+	<div id="all_streams">
+		<form method="POST" id="delete_form" action="">
+			{% csrf_token %}
+			<span id="select_stream">Select Streams</span>
+			<input type="submit" name="delete_stream" id="delete_stream" class="delete_stream" value="Delete"/>
+			<span id="delete-icon"></span>
+			<span id="close_popup">Close</span>
+			<ul class="stream_items">
+				{% if all_streams != None %}
+					{% for stream1 in all_streams %}
+						<li>{{forloop.counter}}. <input type="checkbox" class="each_streams" name="each_streams" value="{{stream1}}">{{stream1}}</input></li>
+					{% endfor %}
+				{% endif %}
+			</ul>
+		</form>
+	</div>
+	<div class="col-lg-5 col-md-5 container">
+		<div class="stream-form upload-stream">
+			<button id="avail_streams">Available Streams</button>
+			<form method="POST" action="" id="ftp-stream">
+				{% csrf_token %}
+				<div class="form-group upload-method">
+					<p>Select Stream Upload Protocol:</p>
+						<input type="radio" id="local" name="stream_type" value="local">
+					    <label for="local">Local</label>
+					    <input type="radio" name="stream_type" value="ftp">
+					    <label for="ftp">FTP</label>
+					    <input type="radio" name="stream_type" value="http">
+					    <label for="http">HTTP/HTTPS</label>
+				</div>
+				<div class="form-group stream-path ftp_cred">
+					<label id="upload-host">Host IP:</label><br>
+	            	<input type="text" class="form-input" id="host_ip" size="30" name="host_ip" placeholder="Enter IP Address" required/>
+				</div>
+				<div class="form-group stream-path ftp_cred">
+					<label id="upload-user">Username:</label><br>
+	            	<input type="text" class="form-input" id="username" size="30" name="username" placeholder="Enter Username" required/>
+				</div>
+				<div class="form-group stream-path ftp_cred">
+					<label id="upload-pass">Password:</label><br>
+	            	<input type="password" class="form-input" id="password" size="30" name="password" placeholder="Enter Password" required/>
+				</div>
+				<div class="form-group stream-path" id="stream-path">
+					<label id="upload-quote"></label><br>
+	            	<input type="text" class="form-input" id="stream_path" size="30" name="stream_path" id="upload_stream_path" placeholder="Stream Path" required/>
+				</div>
+				<div class="form-group ftp-submit">
+		            <input type="submit" name="stream-submit" id="submit_upload" class="form-submit" value="Upload"/>
+		        </div>
+		        <div id="upload-icon"></div>
+			</form>
+		</div>
+	    <form method="POST" id="stream-form" class="stream-form" action="">
+	        {% csrf_token %}
+	        <div class="form-group" id="streamPath">
+	        	<label>Select Stream:</label><br>
+	            <select name="stream_name" id="stream_name" class="stream-name">
+	            	<option value="select" id="select">Select</option>
+				    {% if only_stream != None %}
+						{% for stream in only_stream %}
+				    		<option value="{{stream}}" id="{{stream}}">{{stream}}</option>
+				    	{% endfor %}
+				    {% endif %}
+				</select>
+	        </div>
+	        <!-- ===================TSDuck Main Command================================ -->
+	       	<div class="form-group" id="tscommand">
+	        	<label>Select TSDuck Command:</label><br>
+	            <select name="tsduck_command" class="tsduck_main_command" id="tsduck_main_command">
+	            	<option value="select" id="select">Select</option>
+				    <option value="tsanalyze" id="tsanalyze">tsanalyze</option>
+				    <option value="tspsi" id="tspsi">tspsi</option>
+				    <option value="tsdump" id="tsdump">tsdump</option>
+				    <option value="tsscan" id="tsscan">tsscan</option>
+				    <option value="tstables" id="tstables">tstables</option>
+				    <option value="custom" id="custom">Custom</option>
+				 </select>
+	        </div>
+	        <h4 class="head_sub_cmd">Select Sub-Commands</h4>
+		    <div class="cmd_selection" id="cmd_sub">
+		        <!-- ===================tsanalyze Sub-Commands================================ -->
+		        <div class="form-group tsduck_sub_command tsanalyze_option" id="tsanalyze_option1">
+		        	<label>General purpose options:</label><span class="checked_items"></span> <br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" id="tsanalyze11" value="--bitrate">--bitrate</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--format">--format</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-pager">--no-pager</input></li>
+					    </ul>
+					 </div>
+		        </div>
+		        <div class="form-group tsduck_sub_command tsanalyze_option" id="tsanalyze_option2">
+		        	<label>Analysis control options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--abnt">--abnt</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--atsc">--atsc</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--brazil">--brazil</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-charset">--default-charset</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-pds">--default-pds</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--europe">--europe</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--philippines">--philippines</input></li>
+						</ul>
+					 </div>
+		        </div>
+		        <div class="form-group tsduck_sub_command tsanalyze_option" id="tsanalyze_option3">
+		        	<label>Output control options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--deterministic">--deterministic</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--error-analysis">--error-analysis</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--global-pid-list">--global-pid-list</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--json">--json</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--json-line">--json-line</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--normalized">--normalized</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pes-pid-list">--pes-pid-list</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pid-analysis">--pid-analysis</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pid-list">--pid-list</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--prefix">--prefix</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--service-analysis">--service-analysis</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--service-list">--service-list</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--service-pid-list">--service-pid-list</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--table-analysis">--table-analysis</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--title">--title</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--ts-analysis">--ts-analysis</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--unreferenced-pid-list">--unreferenced-pid-list</input></li>
+						    <li><input type="checkbox" value="--wide-display">--wide-display</input></li>
+						</ul>
+					 </div>
+		        </div>
+		        <!-- ===================tspsi Sub-Commands================================ -->
+		        <div class="form-group tsduck_sub_command tspsi_option" id="tspsi_option1">
+		        	<label>General purpose options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--all-versions">-a/--all-versions</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--cat-only">--cat-only</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--clear">-c/--clear</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--dump">-d/--dump</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--exclude-current">--exclude-current</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--format">--format</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--include-next">--include-next</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--json-output">-j/--json-output</input></li>
+						   	<li><input type="checkbox" name="tsduck_sub_command" value="--log-json-line">--log-json-line</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-pager">--no-pager</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--output-file">-o/--output-file</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--xml-output">-x/--xml-output</input></li>
+						</ul>
+					 </div>
+		        </div>
+		        <div class="form-group tsduck_sub_command tspsi_option" id="tspsi_option2">
+		        	<label>Tables and sections interpretation and formatting options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--abnt">--abnt</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--atsc">--atsc</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--brazil">--brazil</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-charset">--default-charset</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-pds">--default-pds</input></li>
+						   	<li><input type="checkbox" name="tsduck_sub_command" value="--europe">--europe</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--philippines">--philippines</input></li>
+					 </div>
+		        </div>
+		        <div class="form-group tsduck_sub_command tspsi_option" id="tspsi_option3">
+		        	<label>CAS identification options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--conax">--conax</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-cas-id">--default-cas-id</input></li>
+						   	<li><input type="checkbox" name="tsduck_sub_command" value="--irdeto">--irdeto</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--mediaguard">--mediaguard</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--nagravision">--nagravision</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--nds">--nds</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--safeaccess">--safeaccess</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--viaccess">--viaccess</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--widevine">--widevine</input></li>
+						</ul>
+					</div>
+		        </div>
+		        <!-- ===================tsdump Sub-Commands================================ -->
+		        <div class="form-group tsduck_sub_command tsdump_option" id="tsdump_option1">
+		        	<label>General purpose options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--ascii">-a/--ascii</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--binary">-b/--binary</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--c-style">-c/--c-style</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--format">-f/--format</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--headers-only">-h/--headers-only</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--log">-l/--log</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--log-size">--log-size</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--max-packets">-m/--max-packets</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--nibble">-n/--nibble</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-headers">--no-headers</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-pager">--no-pager</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--offset">-o/--offset</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--payload">--payload</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pid">-p/--pid</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--raw-file">-r/--raw-file</input></li>
+						</ul>
+					</div>
+		        </div>
+		        <!-- ===================tsscan Sub-Commands================================ -->
+		        <div class="form-group tsduck_sub_command tsscan_option" id="tsscan_option1">
+		        	<label>Scanning method selection:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--nit-scan">-n/--nit-scan</input></li>
+						   	<li><input type="checkbox" name="tsduck_sub_command" value="--uhf-band">-u/--uhf-band</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--vhf-band">-v/--vhf-band</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--format">-f/--format</input></li>
+						   	<li><input type="checkbox" name="tsduck_sub_command" value="--headers-only">-h/--headers-only</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--log">-l/--log</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--log-size">--log-size</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--max-packets">-m/--max-packets</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--nibble">-n/--nibble</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-headers">--no-headers</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-pager">--no-pager</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--offset">-o/--offset</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--payload">--payload</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pid">-p/--pid</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command"  value="--raw-file">-r/--raw-file</input></li>
+						</ul>
+					</div>
+		        </div>
+		        <div class="form-group tsduck_sub_command tsscan_option" id="tsscan_option2">
+		        	<label>Scanning options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--abnt">--abnt</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--best-strenght">--best-strenght</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--atsc">--atsc</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--brazil">--brazil</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-charset">--default-charset</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-pds">--default-pds</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--europe">--europe</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--min-strenght">--min-strenght</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-offset">--no-offset</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--philippines">--philippines</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--show-modulation">--show-modulation</input></li>
+						</ul>
+					</div>
+		        </div>
+		        <!-- ===================tstables Sub-Commands================================ -->
+		        <div class="form-group tsduck_sub_command tstables_option" id="tstables_option1">
+		        	<label>Tables and sections selection options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--all-once">--all-once</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--all-sections">-a/--all-sections</input></li>
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--diversified-payload">-d/--diversified-payload</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--exclude-current">--exclude-current</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--format">--format name</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--include-next">--include-next</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="-x value">-x value</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--max-tables value">--max-tables value</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--negate-pid">--negate-pid</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--negate-tid">-n/--negate-tid</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--no-duplicate">--no-duplicate</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--no-pager">--no-pager</input></li> -->
+						    <li><input type="checkbox" name="tsduck_sub_command" value="-p">-p/--pid</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="-t">-t/--tid</input></li>
+						</ul>
+					</div>
+					<div id="pid_table">
+						<input type="text" class="form-input" size="5" name="pid_table" id="pid_value" placeholder="pid e.g. '0x11'"/>
+					</div>
+					<div id="tid_table">
+						<input type="text" class="form-input" size="5" name="tid_table" id="tid_value" placeholder="tid e.g. '0x11'"/>
+					</div>
+		        </div>
+		        <div class="form-group tsduck_sub_command tstables_option" id="tstables_option2">
+		        	<label>Output options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="-b">-b/--binary-output filename</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="-f">-f/--flush</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="-i">-i/--ip-udp address:port</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--local-udp address">--local-udp address</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--log">--log</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--log-size value">--log-size value</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--multiple-files">-m/--multiple-files</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--no-encapsulation">--no-encapsulation</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="-o">-o/--output-file/--text-output filename</input></li>
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--output-file">--output-file filename</input></li> -->
+						    <!-- <li><input type="checkbox" name="tsduck_sub_command" value="--text-output">--text-output filename</input></li> -->
+							<li><input type="checkbox" name="tsduck_sub_command" value="--packet-index">--packet-index</input></li>
+							<li><input type="checkbox" name="tsduck_sub_command" value="--rewrite-binary">--rewrite-binary</input></li>
+							<li><input type="checkbox" name="tsduck_sub_command" value="--rewrite-xml">--rewrite-xml</input></li>
+							<li><input type="checkbox" name="tsduck_sub_command" value="--strict-xml">--strict-xml</input></li>
+							<li><input type="checkbox" name="tsduck_sub_command" value="--time-stamp">--time-stamp</input></li>
+							<li><input type="checkbox" name="tsduck_sub_command" value="--ttl value">--ttl value</input></li>
+							<li><input type="checkbox" name="tsduck_sub_command" value="--xml-output">--xml-output filename</input></li>						  
+						</ul>
+					</div>
+		        </div>
+<!-- 		        <div class="form-group tsduck_sub_command tstables_option" id="tstables_option3">
+		        	<label>Tables and sections manipulation options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--fill-eit">--fill-eit</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pack-all-sections">--pack-all-sections</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--pack-and-flush">--pack-and-flush</input></li>
+						</ul>
+					</div>
+		        </div> -->
+<!-- 		        <div class="form-group tsduck_sub_command tstables_option" id="tstables_option4">
+		        	<label>Tables and sections interpretation and formatting options</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--atsc">--atsc</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--brazil">--brazil</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--c-style">-c/--c-style</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-charset name">--default-charset name</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--default-pds value">--default-pds value</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--europe">--europe</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--isdb">--isdb</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--japan">--japan</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--nested-tlv[=min-size]">--nested-tlv[=min-size]</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--philippines">--philippines</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--raw-dump">-r/--raw-dump</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--time-reference name">--time-reference name</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--tlv syntax">--tlv syntax</input></li>
+						</ul>
+					</div>
+		        </div> -->
+		        <!-- ===================END Sub-Commands================================ -->
+		        <div class="form-group tsduck_sub_command generic_option" id="generic_option">
+		        	<label>Generic common command options:</label><span class="checked_items"></span><br>
+		            <div class="tsduck_command">
+		            	<span class="anchor">Select</span>
+		            	<ul class="items">
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--debug">--debug</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--help">--help</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--verbose">--verbose</input></li>
+						    <li><input type="checkbox" name="tsduck_sub_command" value="--version">--version</input></li>
+						</ul>
+					</div>
+		        </div>
+		        <div class="form-group direct_input" id="direct_input">
+		        	<label>Enter TSDuck Command:</label><br>
+	            <input type="text" class="form-input" size="30" name="full_command" id="full_command" placeholder="Ex.: 'tspsi --isdb --abnt'"/>
+		        </div>
+		    </div>
+	        <div class="form-group" id="analyze_submit">
+	            <input type="submit" name="stream-submit" id="submit" class="form-submit" value="Submit"/>
+	        </div>
+	        <div id="analyze-icon"></div>
+	    </form>
+	</div>
+	<div class="col-lg-7 col-md-7 cmd-output">
+		<p><b>Command :</b> <span id="tsduck_cmd"></span></p>
+		<hr>
+		<div class="copyData">
+			<button onclick="saveOutputData()">Save</button>
+		</div>
+		<span id="copy_OutputData">
+			<xmp id="save_output"></xmp>
+		</span>
+	</div>
+</div>
+<div class="footer"><b><i>Developed By</b></i> : Amresh Verma | LGSIA.TV Solution</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/tsduck.js' %}"></script>
+</body>
+</html>

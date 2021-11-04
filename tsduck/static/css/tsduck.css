@@ -1,0 +1,329 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #127275;
+}
+.header{
+  padding: 5px 2px;
+  background-color: #1e3245c7;
+  border: 1px solid #1e3245c7;
+  display: flow-root;
+}
+.header a{
+  font-size: 30px;
+  margin-left: 20px;
+  font-weight: 700;
+  color: #6dd3d6;
+  text-decoration: none;
+}
+.ssh-session, .user-name{
+  float: right;
+}
+.user-name{
+  margin-right: 0;
+}
+.ssh-session button, .user-name{
+  padding: 6px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: 1px solid grey;
+  margin-right: 5px;
+  color: white;
+  background-color: #a12828;
+}
+.ssh-session button:hover{
+  background-color: #c81919;
+  cursor: pointer;
+}
+.user-name:hover{
+  background-color: #c81919;
+  cursor: pointer;
+}
+.analysis_div{
+  margin: 0 10%;
+  padding: 15px;
+  background-color: white;
+  margin-top: 30px;
+  border: 1px solid;
+  border-radius: 5px;
+}
+.footer{
+  text-align: center;
+  bottom: 0;
+  position: fixed;
+  width: 100%;
+  background-color: #afb4bd;
+  padding: 5px 0px;
+  font-size: smaller;
+}
+.analysis_div{
+  margin: 0 10%;
+  padding: 15px;
+  background-color: white;
+  margin-top: 30px;
+  border: 1px solid;
+  border-radius: 5px;
+}
+.cmd{
+  padding: 5px;
+  background-color: #aec3bf;
+}
+#upload-icon, #delete-icon,#analyze-icon{
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  width: 30px;
+  height: 30px;
+  margin: -8px 5px;
+  display: none;
+  animation: spin 2s linear infinite;
+}
+#analyze_submit{
+  display: inline-block;
+}
+#delete-icon{
+  width: 26px;
+  height: 26px;
+  border-top: 3px solid #a4a2a2;
+}
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.main{
+  margin: 30px 5%;
+}
+.container{
+  text-align: center;
+  margin-bottom: 50px;
+}
+.stream-form{
+  margin: 0px;
+  padding: 10px 5px;
+  border: 10px solid #4ca49b;
+  border-radius: 10px;
+  background-color: #8dd7bf;
+  border-top: 5px solid #4ca49b;
+}
+.form-group{
+  padding: 5px;
+  margin: 2px 0px;
+  color: #00000085;
+}
+.form-group input{
+  /*margin-top: 10px;*/
+}
+.form-input, .form-submit{
+  padding: 5px;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+.tsduck_main_command, .stream-name{
+  padding: 5px;
+}
+.tsduck_command, .tsduck_main_command, .stream-name{
+  border-radius: 5px;
+  font-size: 16px;
+  color: #444444;
+  cursor: pointer;
+  display: inline-block;
+  background-color: white;
+}
+.stream-name{
+  max-width: 70%;
+}
+.anchor{
+  /*position: relative;*/
+  cursor: pointer;
+  display: inline-block;
+  padding: 4px 50px 2px 10px;
+  border: 1px solid #777272;
+  border-radius: 5px;
+}
+.anchor:active:after {
+  right: 8px;
+  top: 20%;
+}
+ul.items{
+  margin: 0px;
+  padding: 4px 6px 0px;
+  border: 1px solid #777272;
+  position: absolute;
+  background-color: white;
+  display: none;
+  padding-bottom: 10px;
+  max-height: 25vh;
+  overflow: auto;
+}
+li{
+  list-style: none;
+  text-align: left;
+}
+input[type="checkbox"]{
+  margin-right: 5px;
+}
+.tsduck_command option{
+  cursor: pointer;
+}
+#submit{
+  font-size: 16px;
+  padding: 4px 6px;
+  color: black;
+  background-color: #f6f1f1;
+}
+#submit:hover{
+  color: white;
+  background-color: #b52a2a;
+  cursor:pointer;
+}
+.cmd-output{
+  padding: 5px;
+  border: 3px solid #767b84;
+  border-radius: 5px;
+  overflow: scroll;
+  height: 520px;
+  background-color: #f4f7f7;
+  color: black;
+  margin-bottom: 30px;
+  display: none;
+}
+.cmd-output span{
+  /*-webkit-appearance: textarea;*/
+}
+.cmd-output hr{
+  margin: 15px 0px;
+  border-top: 1px solid #b6b2b2;
+}
+.tsduck_sub_command{
+  display: none;
+}
+.copyData {
+  margin-bottom: 5px;
+}
+.copyData button{
+  cursor: pointer;
+  margin-right: 10px;
+}
+.cmd_selection{
+  border: 2px solid #53a1a4;
+  border-radius: 10px;
+  margin: 10px 10px;
+  padding: 5px;
+  display: none;
+}
+.head_sub_cmd{
+  display: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: #00000085;
+}
+#direct_input{
+  display: none;
+}
+#pid_table, #tid_table{
+  display: none;
+}
+#pid_value, #tid_value{
+  padding: 4px;
+}
+/* --------------Upload Stream================ */
+#all_streams{
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border: 2px solid grey;
+  border-radius: 6px;
+  max-height: 70vh;
+  overflow: auto;
+  z-index: 1;
+  width: 600px;
+  left: 30%;
+}
+#delete_form ul{
+  padding-left: 1px;
+  padding-top: 5px;
+}
+#select_stream{
+  padding: 4px;
+  border: 1px solid darkgrey;
+  border-radius: 3px;
+  border-style: outset;
+  cursor: pointer;
+  background-color: #efefef;
+  font-size: 13px;
+}
+#select_stream:hover{
+  background-color: #e7e7e7;
+}
+#delete_stream, #delete_form input{
+  display: none;
+}
+#delete_stream{
+  font-size: 13px;
+  margin-left: 5px;
+}
+#close_popup{
+  cursor: pointer;
+  float: right;
+}
+#close_popup:hover{
+  font-weight: 700;
+}
+#avail_streams{
+  border-radius: 5px;
+  border: 1px solid grey;
+  /*background-color: #a8d8d8;*/
+  float: right;
+  margin-right: 10px;
+}
+.upload-stream{
+  text-align: left;
+  border-bottom: 5px solid #4ca49b;
+  border-top: 10px solid #4ca49b;
+}
+.stream-path{
+  display: inline-block;
+  padding-top: 0px;
+}
+.ftp-submit{
+  display: inline-block;
+  padding: 0px;
+}
+.stream-path, .ftp-submit{
+  display: none;
+}
+.ftp-submit input{
+  font-size: 15px;
+  padding: 4px 5px;
+  color: black;
+  background-color: #f6f1f1;
+}
+.ftp-submit input:hover{
+  color: white;
+  background-color: #b52a2a;
+  cursor:pointer;
+}
+.upload-method{
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-top: 0px;
+}
+.upload-method p{
+  margin: 0 0 0px;
+  font-weight: 700;
+}
+.upload-method label{
+  font-weight: 200;
+}
+#upload_stream{
+  position: absolute;
+  color: transparent;
+}
+/* -----------END Upload Stream--------------------- */
